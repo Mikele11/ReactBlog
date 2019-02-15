@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+
+import HeaderPanel from './components/HeadPanel.js'
+
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
@@ -53,6 +56,7 @@ class App extends Component {
   render() {
     return (
       <div className="container">
+      <HeaderPanel/>
         <div className="panel panel-default">
           <div className="panel-heading">
             <h3 className="panel-title">

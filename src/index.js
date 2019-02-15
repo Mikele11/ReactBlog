@@ -10,7 +10,7 @@ import Create from './components/Create';
 import Update from './components/Upd';
 import CreateCom from './components/CreateCom';
 import Showcomment from './components/Showcomment';
-
+import About from './components/About'
 import { Provider } from 'react-redux';
 import store from './store';
 
@@ -26,6 +26,7 @@ ReactDOM.render(
         <Route path='/update' component={Update} />
         <Route path='/addcomment' component={CreateCom} />
         <Route path='/showcomment' component={Showcomment} />
+        <Route path='/about' component={About} />
       </div>
     </Router>
   </Provider>,
