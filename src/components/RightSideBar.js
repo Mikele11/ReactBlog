@@ -7,7 +7,9 @@ export default class RightSideBar extends React.Component {
     usersOnline: []
   }
   componentDidMount() {
-    const  socket = openSocket('http://localhost:3000');
+    //http://localhost:3000
+    //https://blogmernredux.herokuapp.com/
+    const  socket = openSocket('https://blogmernredux.herokuapp.com');
     socket.on('fetch online', (usersOnline) => {
       console.log('usersOnline',usersOnline)
       this.setState({usersOnline: usersOnline})

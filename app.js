@@ -15,7 +15,8 @@ var app = express();
 
 var express = require('express');
 var app = express();
-var server = app.listen(3000);
+const port = process.env.PORT || 3000;
+var server = app.listen(port);
 var io = require('socket.io').listen(server);
 //of soket io
 //app.set('view engine', 'html');
