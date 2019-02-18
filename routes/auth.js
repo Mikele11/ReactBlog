@@ -37,6 +37,8 @@ router.post('/login', function(req, res) {
         if (isMatch && !err) {
           var token = jwt.sign(user.toJSON(), settings.secret);
           res.json({success: true, token: 'JWT ' + token});
+          //success
+          
         } else {
           res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
         }

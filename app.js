@@ -7,6 +7,17 @@ var bodyParser = require('body-parser');
 var post = require('./routes/post');
 var auth = require('./routes/auth');
 var app = express();
+// on socket ip
+//var http = require('http');
+
+//var server = http.createServer(app);
+//var io = require('socket.io').listen(server);
+
+var express = require('express');
+var app = express();
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
+//of soket io
 //app.set('view engine', 'html');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -40,6 +51,30 @@ app.use(function(err, req, res, next) {
   res.render('err');
 });
 
+usersOnline = [];
+function unique(arr) {
+	var obj = {};
+	for (var i = 0; i < arr.length; i++) {
+		var str = arr[i];
+		obj[str] = true; 
+	}
+	return Object.keys(obj); 
+};
+io.on('connection', (socket) => {
+
+  socket.on('remember user', (user) => {
+    console.log(user);
+    socket.user = user;
+    usersOnline.push(user);
+    usersOnline = unique(usersOnline);
+    io.emit('fetch online', usersOnline);
+  });
+  /*
+  socket.on('disconnect', function () {
+    usersOnline.splice(usersOnline.indexOf(socket.user), 1);
+  });
+  */	
+})
 module.exports = app;
 
 
