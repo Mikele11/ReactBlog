@@ -10,7 +10,7 @@ export default class RightSideBar extends React.Component {
     //http://localhost:3000
     //https://blogmernredux.herokuapp.com/
     try {
-      const socket = openSocket('http://localhost:3000',{transports: ['websocket']});
+      const socket = openSocket('https://blogmernredux.herokuapp.com/',{transports: ['websocket']});
       socket.on('fetch online', (usersOnline) => {
         console.log('usersOnline',usersOnline)
         this.setState({usersOnline: usersOnline})

@@ -25,7 +25,7 @@ class Login extends Component {
 
     const { username, password } = this.state;
     //https://blogmernredux.herokuapp.com
-    const socket = openSocket('http://localhost:3000',{transports: ['websocket']});
+    const socket = openSocket('https://blogmernredux.herokuapp.com/',{transports: ['websocket']});
 
     axios.post('/api/auth/login', { username, password })
       .then((result) => {
