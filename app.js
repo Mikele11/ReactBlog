@@ -15,9 +15,12 @@ var app = express();
 
 var express = require('express');
 var app = express();
+
 const port = process.env.PORT || 3000;
 var server = app.listen(port);
-var io = require('socket.io').listen(server);
+const socketIo = require("socket.io");
+var io = socketIo(server, {pingInterval: 10, pingTimeout: 4000 });
+io.set('transports', ['websocket']);
 //of soket io
 //app.set('view engine', 'html');
 var mongoose = require('mongoose');
@@ -61,6 +64,7 @@ function unique(arr) {
 	}
 	return Object.keys(obj); 
 };
+
 io.on('connection', (socket) => {
 
   socket.on('remember user', (user) => {
@@ -70,12 +74,16 @@ io.on('connection', (socket) => {
     usersOnline = unique(usersOnline);
     io.emit('fetch online', usersOnline);
   });
-  /*
+  
   socket.on('disconnect', function () {
     usersOnline.splice(usersOnline.indexOf(socket.user), 1);
   });
-  */	
+  socket.onclose = function(event) {
+    console.log("WebSocket is closed now.",event);
+  };
+    
 })
+
 module.exports = app;
 
 

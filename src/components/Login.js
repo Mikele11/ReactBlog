@@ -24,17 +24,24 @@ class Login extends Component {
     e.preventDefault();
 
     const { username, password } = this.state;
-    const  socket = openSocket('https://blogmernredux.herokuapp.com');
+    //https://blogmernredux.herokuapp.com
+    const socket = openSocket('http://localhost:3000',{transports: ['websocket']});
+
     axios.post('/api/auth/login', { username, password })
       .then((result) => {
         localStorage.setItem('jwtToken', result.data.token);
         this.setState({ message: '' });
 
-        const newLocal = 'connect';
-        socket.on(newLocal, function (){
-          socket.emit('remember user', username);
-          console.log('username',username)
-        });
+        try {
+          const newLocal = 'connect';
+          socket.on(newLocal, function (){
+            socket.emit('remember user', username);
+            console.log('username',username)
+          });
+        } catch (error) {
+          console.log('error',error)
+        }
+
 
         this.props.history.push('/')
 

@@ -61,7 +61,8 @@
     "semantic-ui-react": "^0.80.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "websocket": "^1.0.28"
   },
   "engines": {
     "node": ">= 6.0.0",

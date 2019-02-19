@@ -9,16 +9,22 @@ export default class RightSideBar extends React.Component {
   componentDidMount() {
     //http://localhost:3000
     //https://blogmernredux.herokuapp.com/
-    const  socket = openSocket('https://blogmernredux.herokuapp.com');
-    socket.on('fetch online', (usersOnline) => {
-      console.log('usersOnline',usersOnline)
-      this.setState({usersOnline: usersOnline})
-    });
+    try {
+      const socket = openSocket('http://localhost:3000',{transports: ['websocket']});
+      socket.on('fetch online', (usersOnline) => {
+        console.log('usersOnline',usersOnline)
+        this.setState({usersOnline: usersOnline})
+      });
+    } catch (error) {
+      console.log('error',error)
+
+    }
   }
   render() {
     const { usersOnline } = this.state;
+    console.log('usersOnline render',usersOnline)
     return (
-      <header className='RightSideBar'>
+      <div className='RightSideBar'>
         <div className="container">
           <ul>
             {usersOnline.map((user,index)  =>
@@ -28,7 +34,7 @@ export default class RightSideBar extends React.Component {
             )}
           </ul>
         </div>
-      </header>
+      </div>
     );
   }
 }
