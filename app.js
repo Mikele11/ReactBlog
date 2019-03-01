@@ -7,22 +7,7 @@ var bodyParser = require('body-parser');
 var post = require('./routes/post');
 var auth = require('./routes/auth');
 var app = express();
-// on socket ip
-//var http = require('http');
 
-//var server = http.createServer(app);
-//var io = require('socket.io').listen(server);
-
-var express = require('express');
-var app = express();
-
-const port = process.env.PORT || 3000;
-var server = app.listen(port);
-const socketIo = require("socket.io");
-var io = socketIo(server, {pingInterval: 10, pingTimeout: 4000 });
-io.set('transports', ['websocket']);
-//of soket io
-//app.set('view engine', 'html');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 //mongodb://localhost/mern-b
@@ -44,7 +29,13 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+var flash = require('express-flash');
+app.use(flash());
+app.use(bodyParser.urlencoded({extended: true}));
 
+app.use((req, res, next) => {
+  res.status(404).send('<h2 align=center>Page Not Found!</h2>');
+});
 
 app.use(function(err, req, res, next) {
 
@@ -52,38 +43,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500);
-  res.render('err');
+  res.json ({error: err})
 });
 
-usersOnline = [];
-function unique(arr) {
-	var obj = {};
-	for (var i = 0; i < arr.length; i++) {
-		var str = arr[i];
-		obj[str] = true; 
-	}
-	return Object.keys(obj); 
-};
-
-io.on('connection', (socket) => {
-
-  socket.on('remember user', (user) => {
-    console.log(user);
-    socket.user = user;
-    usersOnline.push(user);
-    usersOnline = unique(usersOnline);
-    io.emit('fetch online', usersOnline);
-  });
-  
-  socket.on('disconnect', function () {
-    usersOnline.splice(usersOnline.indexOf(socket.user), 1);
-  });
-  socket.onclose = function(event) {
-    console.log("WebSocket is closed now.",event);
-  };
-    
-})
-
 module.exports = app;
-
-

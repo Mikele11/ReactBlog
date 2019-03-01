@@ -8,10 +8,14 @@ var UserSchema = new Schema({
         unique: true,
         required: true
     },
+  firstName: String,
+  lastName: String,
+  address: String,
   password: {
         type: String,
         required: true
-    }
+    },
+  passwordReset: String,
 });
 
 UserSchema.pre('save', function (next) {

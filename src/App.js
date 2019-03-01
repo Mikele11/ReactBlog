@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-import HeaderPanel from './components/HeadPanel.js'
-import RightSideBar from './components/RightSideBar.js'
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { fetchPost, deletePost, logout } from './actions/postActions';
+import store from './store';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+import HeaderPanel from '../src/components/HeadPanel'
 
 class App extends Component {
 
@@ -18,15 +20,17 @@ class App extends Component {
   }
   
   componentDidMount() {
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwtToken');
-    axios.get('/api/post')
-      .then(res => {
-        this.setState({ posts: res.data });
-        console.log('App posts', this.state.posts)
+    if (window.location.search === '?ch=1') {
+      this.props.history.push("/confirm");
+    }
+    if (localStorage.getItem('jwtToken')===null) {
+      this.props.history.push("/login");
+    } else {
+      this.props.fetchPost();
+      store.subscribe(()=>{
+       console.log('fetch posts',store.getState());
       })
-      .catch((error) => {
-          this.props.history.push("/login");      
-      });
+    }
   }
 
   logout = () => {
@@ -35,65 +39,50 @@ class App extends Component {
   }
 
   onDelete(index){
-		axios.delete('/api/post/'+ this.state.posts[index]._id)
-			.then((result) => { 
-        console.log('post deleted');
-        axios.delete('/api/post/comment/'+ this.state.posts[index]._id)
-        .then(res => {
-          console.log('deleted comment',res);
-        })
-        .catch((error) => {
-          console.log('error',error);
-        });
-				axios.get('/api/post')
-					.then(res => {
-						this.setState({ posts: res.data });
-					})
-					.catch((error) => {
-						console.log('error',error);
-					});
-			});
+    this.props.deletePost(this.props.posts[index]._id);
+    store.subscribe(()=>{
+      console.log('fetch posts',store.getState());
+    }) 
   }
   
   render() {
     return (
-      <div className="container">
+      <div class="container">
       <HeaderPanel/>
-      <RightSideBar/>
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h3 className="panel-title">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
               BLOG &nbsp;
               {localStorage.getItem('jwtToken') &&
-                <button className="btn btn-primary" onClick={this.logout}>Logout</button>
+                <button class="btn btn-primary" onClick={this.logout}>Logout</button>
               }
             </h3>
           </div>
-          <div className="panel-body">
-            <h4><Link to="/create"> Add Post</Link><span className="glyphicon glyphicon-plus"></span></h4>
+          <div class="panel-body">
+            <h4><Link to="/create"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Post</Link></h4>
             <div>
-                {this.state.posts.map((post,index)  =>
-                <div className="article">
-                  <div className ="article_date">
+                {this.props.posts.map((post,index)  =>
+                <div class="article">
+                  <div class ="article_date">
                     <div>Recording time: </div>
                     <div>{post.date}</div>
                   </div>
                   <div>{post.description}</div>
-                    <div className ="article_author">
+                    <div class ="article_author">
                     <div>Author: </div>
                     <div>{post.author}</div>
                   </div>
-                  <div className ="article_author">                                                    
-                    <div><Link to={`/showcomment/${this.state.posts[index]._id}`}>Comments: </Link></div>
+                  <div class ="article_author">                                                    
+                    <div><Link to={`/showcomment/${this.props.posts[index]._id}`}>Comments: </Link></div>
                     <div>{post.comment.length}</div>
                   </div>
-                  <div className ="article_buttons">
+                  <div class ="article_buttons">
                     <div>
-                      <button className="btn btn-warning"><Link to={`/update/${this.state.posts[index]._id}`}>Update<i class="glyphicon glyphicon-edit"></i></Link></button>
+                      <button class="btn btn-warning"><Link to={`/update/${this.props.posts[index]._id}`}>Update<i class="glyphicon glyphicon-edit"></i></Link></button>
                     </div>
-                    <div><button className="btn btn-danger" onClick={this.onDelete.bind(this,index)}>Delete<i class="fa fa-trash-o" aria-hidden="true"></i></button></div>
+                    <div><button class="btn btn-danger" onClick={this.onDelete.bind(this,index)}>Delete<i class="fa fa-trash-o" aria-hidden="true"></i></button></div>
                     <div>
-                      <button className="btn btn-primary"><Link to={`/addcomment/${this.state.posts[index]._id}`}>add comments</Link></button>
+                      <button class="btn btn-primary"><Link to={`/addcomment/${this.props.posts[index]._id}`}>add comments</Link></button>
                     </div>
                   </div>
                 </div>
@@ -105,5 +94,14 @@ class App extends Component {
     );
   }
 }
+App.propTypes = {
+  fetchPost: PropTypes.func.isRequired,
+  deletePost: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
+};
 
-export default App;
+const mapStateToProps = state => ({
+  posts: state.posts.postss,
+});
+
+export default connect(mapStateToProps, { fetchPost, deletePost, logout })(App);

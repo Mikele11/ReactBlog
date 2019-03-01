@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Post = require('../models/Post.js');
+var User = require('../models/User.js');
 var Comment = require('../models/Comment.js');
 var passport = require('passport');
 require('../config/passport')(passport);
@@ -122,6 +123,36 @@ router.post('/comment/:id', passport.authenticate('jwt', { session: false}), fun
   }
 })
 
+router.post('/user', passport.authenticate('jwt', { session: false}), function(req, res) {
+  let token = getToken(req.headers);
+  if (token) {
+    User.findOne({ username: req.body.email })
+		.then(function(coment) {
+      res.json(coment);
+		})
+		.catch(function(err) {
+			return next(err);
+    })
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+})
+
+router.put('/user/:id', passport.authenticate('jwt', { session: false}), function(req, res, next) {
+  var token = getToken(req.headers);
+  if (token) {
+    User.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
+      if (err) {
+        console.log('err update user',err)
+        return next(err);
+      }
+      res.json(user);
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'Unauthorized.'});
+  }
+});
+
 router.delete('/comment/:id', passport.authenticate('jwt', { session: false}), function(req, res) {
   let token = getToken(req.headers);
   if (token) {
@@ -137,4 +168,5 @@ router.delete('/comment/:id', passport.authenticate('jwt', { session: false}), f
     return res.status(403).send({success: false, msg: 'Unauthorized.'});
   }
 })
+
 module.exports = router;

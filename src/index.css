@@ -3,11 +3,6 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
 .article{
   padding: 1em 1.5em;
   background: #fff;
@@ -44,6 +39,8 @@ ul {
 button>a{
 	color:white !important;
 }
+
+
 .Header {
   color: #fff;
   background: #524763;

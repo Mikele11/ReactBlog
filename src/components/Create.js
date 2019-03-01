@@ -25,7 +25,11 @@ class Create extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const { date, author, description,comment } = this.state;
-    let post = { date, author, description,comment };
+    var post={};
+    post.date = date;
+    post.author = author;
+    post.description = description;
+    post.comment = comment;
     this.props.createPost(post);
     store.subscribe(()=>{
       console.log('subscribenewPOST',store.getState());

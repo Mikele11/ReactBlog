@@ -74,7 +74,7 @@ CreateCom.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  posts: state.posts.coments,
+  posts: state.posts.postss,
 });
 
 export default connect(mapStateToProps, { createComment })(CreateCom);

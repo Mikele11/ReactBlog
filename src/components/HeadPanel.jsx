@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
-export default class HeaderPanel extends React.Component {
+export default class HeaderPanel extends Component {
   render() {
     return (
       <header className='Header'>
@@ -12,7 +12,7 @@ export default class HeaderPanel extends React.Component {
           </label>
           <ul className="hidden-menu">
             <li><NavLink activeClassName="active" exact to="/">Главная</NavLink></li>
-            <li><NavLink activeClassName="active" to="/about">О профиле</NavLink></li>
+            <li><NavLink activeClassName="active" to="/profile">О профиле</NavLink></li>
           </ul>
         </div>
       </header>

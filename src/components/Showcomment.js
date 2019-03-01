@@ -5,10 +5,6 @@ import { fetchComments } from '../actions/postActions';
 import store from './../store';
 
 class Showcomment extends Component {
-
-  constructor(props) {
-    super(props);
-  }
   
   componentWillMount() {
     var loc = window.location.pathname;

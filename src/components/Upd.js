@@ -42,7 +42,10 @@ class Update extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const { id,date, author, description } = this.state;
-    let post = { date, author, description };
+    var post={};
+    post.date = date;
+    post.author = author;
+    post.description = description;
     this.props.updatePost(id,post);
     store.subscribe(()=>{
       console.log('subscribenewPOST',store.getState());
